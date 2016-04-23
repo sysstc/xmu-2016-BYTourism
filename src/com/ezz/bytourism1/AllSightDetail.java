@@ -64,7 +64,7 @@ public class AllSightDetail extends BaseActivity implements OnClickListener,OnIt
  	private ImageButton collectButton;
  	private Integer userid ;
  	private int flag = 0;
- 	
+ 	private List<String> imageUrls;
  	private static final ThreadLocal re = new ThreadLocal();
  	int a = 0;
  	@Override
@@ -80,8 +80,10 @@ public class AllSightDetail extends BaseActivity implements OnClickListener,OnIt
  		city_name = searchIntent.getStringExtra("city_name");
  		rid = Integer.parseInt(searchIntent.getStringExtra("rid"));
  		Toast.makeText(AllSightDetail.this, city_name+" "+rid, Toast.LENGTH_SHORT).show();
- 		
+ 		imageUrls = new ArrayList<String>();
  	
+ 		dataList = new ArrayList<Map<String, Object>>();
+ 		
  		edit_Search1 = (AutoCompleteTextView) findViewById(R.id.edit_Search1);
  		edit_Search1.setText(city_name);
  		find_btn = (Button) findViewById(R.id.find_btn);
@@ -226,43 +228,17 @@ public class AllSightDetail extends BaseActivity implements OnClickListener,OnIt
  		
  		find_btn.setOnClickListener(this);
  		
- 		//搜索框输入时，单击回车
- 		/*		edit_Search1.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-			
-			@Override
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-				// TODO 自动生成的方法存根
-				if(actionId==EditorInfo.IME_ACTION_SEND||(event!=null&&event.getKeyCode()==KeyEvent.KEYCODE_ENTER)){
-					Toast.makeText(AllSightDetail.this, "开始搜索"+city_name, Toast.LENGTH_SHORT).show();
-					getData();
-					return true;
-				}
-				return false;
-			}
-
-			private void query() {
-				// TODO 自动生成的方法存根
-				
-			}
-			
-		});*/
  		btn_back.setOnClickListener(new OnClickListener() {  
 			
 			@Override
 			public void onClick(View v) {
 				// TODO 自动生成的方法存根     
-				Intent intent = new Intent(AllSightDetail.this,AllRoutes.class);
-				intent.putExtra("city_name", city_name);
-				startActivity(intent);
 				
+				AllSightDetail.this.finish();
 			}
 		});
  		dataList = new ArrayList<Map<String, Object>>();
 		getData();
-		/*sadapter = new SimpleAdapter(AllSightDetail.this, dataList, R.layout.listview_item,
- 				new String[]{"sight_view","sight_name","sight_type","sight_price","sight_avggrade"} ,
- 				new int[]{R.id.sight_view,R.id.sight_name,R.id.sight_type,R.id.sight_price,R.id.sight_avggrade});
-		*/ 
 		sadapter = new MySimpleAdapter(AllSightDetail.this, dataList, R.layout.listview_item,
  				new String[]{"sight_view","sight_name","sight_type","sight_price","sight_avggrade"} ,
  				new int[]{R.id.sight_view,R.id.sight_name,R.id.sight_type,R.id.sight_price,R.id.sight_avggrade});
@@ -270,6 +246,14 @@ public class AllSightDetail extends BaseActivity implements OnClickListener,OnIt
 		 city_listview.setAdapter(sadapter);
 		 city_listview.setOnItemClickListener(this);
  	}
+ 	  public boolean onKeyDown(int keyCode, KeyEvent event) {
+ 	    	// TODO 自动生成的方法存根
+ 	    	if(keyCode==KeyEvent.KEYCODE_BACK){
+ 	    		AllSightDetail.this.finish();
+ 	 	    	return true;
+ 	    	}
+ 	    	return super.onKeyDown(keyCode, event);
+ 	  }
  	Handler handler = new Handler(){
 			@Override
 			public void handleMessage(Message msg) {
@@ -281,14 +265,13 @@ public class AllSightDetail extends BaseActivity implements OnClickListener,OnIt
 					 Map<String, Object> a = (Map<String, Object>)scienc;
 					 dataList.add(a);		 
   				     sadapter.notifyDataSetChanged();
-				//	 Toast.makeText(AllSightDetail.this, time+" "+dataList.size()+"   "+msg.toString(), Toast.LENGTH_SHORT).show();
-					 break;
+  				     
+  				     break;
 				case 2:
-					scienc=msg.obj;
+				     scienc=msg.obj;
 					 Map<String, Object> b = (Map<String, Object>)scienc;
 					 dataList.add(b);
 					 sadapter.notifyDataSetChanged();
-				//	Toast.makeText(AllSightDetail.this, time+" "+dataList.size()+"   "+msg.toString(), Toast.LENGTH_SHORT).show();
 
 					break;
 				case 3:
@@ -296,16 +279,14 @@ public class AllSightDetail extends BaseActivity implements OnClickListener,OnIt
 					 Map<String, Object> c = (Map<String, Object>)scienc;
 					 dataList.add(c);
 					 sadapter.notifyDataSetChanged();
-		//			Toast.makeText(AllSightDetail.this, time+" "+dataList.size()+"   "+msg.toString(), Toast.LENGTH_SHORT).show();
-					//Log.i("tag3",msg.toString());
+
 				
 					break;
 				case 4:
 					scienc=msg.obj;
 					 Map<String, Object> d = (Map<String, Object>)scienc;
 					 dataList.add(d);
-			//		Toast.makeText(AllSightDetail.this, time+" "+dataList.size()+"   "+msg.toString(), Toast.LENGTH_SHORT).show();
-					//Log.i("tag4",msg.toString());
+
 					 sadapter.notifyDataSetChanged();
 					break;
 				case 5:
@@ -315,6 +296,8 @@ public class AllSightDetail extends BaseActivity implements OnClickListener,OnIt
 					 sadapter.notifyDataSetChanged();
 					break;
 				case 0:
+					 Log.i("Image Src", msg.obj.toString());
+					 imageUrls.add(msg.obj.toString());
 					break;
 				}
 				super.handleMessage(msg);
@@ -377,12 +360,17 @@ public class AllSightDetail extends BaseActivity implements OnClickListener,OnIt
 										city_map.put("sight_type",ascenic.get(0).getScenictype());
 										city_map.put("sight_price",ascenic.get(0).getScenicprice());
 										city_map.put("sight_avggrade",ascenic.get(0).getAvggrade());
+										city_map.put("sight_view", ascenic.get(0).getScenicview());
 										
 										Message msg = new Message();
 										msg.what = 1;
 										msg.obj = city_map;
 										handler.sendMessage(msg);
 										
+										Message msg1 = new Message();
+										msg1.what = 0;
+										msg1.obj = ascenic.get(0).getScenicview();
+										handler.sendMessage(msg1);
 				//						Toast.makeText(AllSightDetail.this,city_map.get("sight_name")+"",Toast.LENGTH_SHORT).show();
 									}
 								});
@@ -407,12 +395,18 @@ public class AllSightDetail extends BaseActivity implements OnClickListener,OnIt
 										city_map.put("sight_type",ascenic.get(0).getScenictype());
 										city_map.put("sight_price",ascenic.get(0).getScenicprice());
 										city_map.put("sight_avggrade",ascenic.get(0).getAvggrade());
+										city_map.put("sight_view", ascenic.get(0).getScenicview());
 										
 										Message msg = new Message();
 										msg.what = 2;
 										msg.obj = city_map;
 										handler.sendMessage(msg);
 										
+										
+										Message msg1 = new Message();
+										msg1.what = 0;
+										msg1.obj = ascenic.get(0).getScenicview();
+										handler.sendMessage(msg1);
 			//							Toast.makeText(AllSightDetail.this,city_map.get("sight_name")+"",Toast.LENGTH_SHORT).show();
 										}
 								});
@@ -438,12 +432,17 @@ public class AllSightDetail extends BaseActivity implements OnClickListener,OnIt
 										city_map.put("sight_type", scenic.get(0).getScenictype());
 										city_map.put("sight_price", scenic.get(0).getScenicprice());
 										city_map.put("sight_avggrade", scenic.get(0).getAvggrade());
+										city_map.put("sight_view", scenic.get(0).getScenicview());
 										
 										Message msg = new Message();
 										msg.what = 3;
 										msg.obj = city_map;
 										handler.sendMessage(msg);
 										
+										Message msg1 = new Message();
+										msg1.what = 0;
+										msg1.obj = scenic.get(0).getScenicview();
+										handler.sendMessage(msg1);
 				//						Toast.makeText(AllSightDetail.this,city_map.get("sight_name")+"",Toast.LENGTH_SHORT).show();
 										}
 								
@@ -469,13 +468,17 @@ public class AllSightDetail extends BaseActivity implements OnClickListener,OnIt
 										city_map.put("sight_type", ascenic.get(0).getScenictype());
 										city_map.put("sight_price", ascenic.get(0).getScenicprice());
 										city_map.put("sight_avggrade", ascenic.get(0).getAvggrade());
-										
+										city_map.put("sight_view", ascenic.get(0).getScenicview());
 										
 										Message msg = new Message();
 										msg.what = 4;
 										msg.obj = city_map;
 										handler.sendMessage(msg);
 										
+										Message msg1 = new Message();
+										msg1.what = 0;
+										msg1.obj = ascenic.get(0).getScenicview();
+										handler.sendMessage(msg1);
 			//							Toast.makeText(AllSightDetail.this,city_map.get("sight_name")+"",Toast.LENGTH_SHORT).show();
 										}
 								});
@@ -500,12 +503,17 @@ public class AllSightDetail extends BaseActivity implements OnClickListener,OnIt
 										city_map.put("sight_type",ascenic.get(0).getScenictype());
 										city_map.put("sight_price",ascenic.get(0).getScenicprice());
 										city_map.put("sight_avggrade",ascenic.get(0).getAvggrade());
+										city_map.put("sight_view", ascenic.get(0).getScenicview());
 										
 										Message msg = new Message();
 										msg.what = 5;
 										msg.obj = city_map;
 										handler.sendMessage(msg);
 									
+										Message msg1 = new Message();
+										msg1.what = 0;
+										msg1.obj = ascenic.get(0).getScenicview();
+										handler.sendMessage(msg1);
 		//								Toast.makeText(AllSightDetail.this,city_map.get("sight_name")+"",Toast.LENGTH_SHORT).show();
 									}
 								});
@@ -536,17 +544,15 @@ public class AllSightDetail extends BaseActivity implements OnClickListener,OnIt
 		collectButton.setVisibility(View.GONE);
 		rid = 0;
 		getData();
-	
-		sadapter = new SimpleAdapter(AllSightDetail.this, dataList, R.layout.listview_item,
- 				new String[]{"sight_view","sight_name","sight_type","sight_price","sight_avggrade"} ,
- 				new int[]{R.id.sight_view,R.id.sight_name,R.id.sight_type,R.id.sight_price,R.id.sight_avggrade});
-		 
 		sadapter = new MySimpleAdapter(AllSightDetail.this, dataList, R.layout.listview_item,
- 				new String[]{"sight_view","sight_name","sight_type","sight_price","sight_avggrade"} ,
- 				new int[]{R.id.sight_view,R.id.sight_name,R.id.sight_type,R.id.sight_price,R.id.sight_avggrade});
+ 				new String[]{"sight_view","sight_name","sight_type","sight_price","sight_avggrade","sight_view"} ,
+ 				new int[]{R.id.sight_view,R.id.sight_name,R.id.sight_type,R.id.sight_price,R.id.sight_avggrade,R.id.sight_view});
 		
 		 city_listview.setAdapter(sadapter);
 		 city_listview.setOnItemClickListener(this);
+		 for(int i = 0;i<imageUrls.size();i++){
+			Log.i("imagesrc", imageUrls.get(i));
+		 }
 	}
 
 	@Override

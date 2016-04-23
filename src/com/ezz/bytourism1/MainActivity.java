@@ -1,46 +1,42 @@
 package com.ezz.bytourism1;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ezz.bean.City;
-import com.ezz.bean.Scenic;
-import com.ezz.bean.Scenicroute;
 
-import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobObject;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.listener.FindListener;
-import android.R.anim;
-import android.R.integer;
+import com.nineoldandroids.view.ViewHelper;
 import android.app.Activity;
-import android.app.ActionBar;
-import android.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.DrawerLayout.DrawerListener;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.webkit.WebView.FindListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Build;
+import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobQuery;
+
+import com.ezz.bean.City;
+import com.zhy.view.CircleMenuLayout;
+import com.zhy.view.CircleMenuLayout.OnMenuItemClickListener;
 
 public class MainActivity extends Activity {
 	private TextView textcity;
 	private Spinner spinner;
+	
 	private List<String>list;
 
 	private ArrayAdapter<String>adapter;
@@ -48,17 +44,93 @@ public class MainActivity extends Activity {
     private ImageView imagefirst;
 	private final static int CWJ_HEAP_SIZE = 6* 1024* 1024 ;
 	private String citysid;
+	private ImageButton imagebutton1;
+	
+	private CircleMenuLayout mCircleMenuLayout;
+
+	private String[] mItemTexts = new String[] { "个人中心 ", "设置", "我的朋友",
+			"约驴友", "我的活动", "找线路" };
+	private int[] mItemImgs = new int[] { R.drawable.person_three,
+			R.drawable.seting, R.drawable.friend_2,
+			R.drawable.tourism, R.drawable.activity,
+			R.drawable.route_normal };
+
+	
 	//定义搜索栏
 	private AutoCompleteTextView csearch;
 	private String citytipname;
 	private String cityname;
-	private TabHost thHost;
+
+	//LeftMenu
+	
+	private DrawerLayout drawerLayout;
 	
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
     	
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.choose1);
+		getActionBar().hide();
+		initDrawerLayout();
+		
+		//圆形菜单
+		mCircleMenuLayout = (CircleMenuLayout) findViewById(R.id.id_menulayout);
+		mCircleMenuLayout.setMenuItemIconsAndTexts(mItemImgs, mItemTexts);
+		
+		
+
+		mCircleMenuLayout.setOnMenuItemClickListener(new OnMenuItemClickListener()
+		{
+			
+			@Override
+			public void itemClick(View view, int pos)
+			{
+				Intent intent = null;
+				switch (pos) {
+				case 0:
+					intent= new Intent(MainActivity.this,Personal_centerActivity.class);
+					startActivity(intent);
+					break;
+				case 1:
+					intent = new Intent(MainActivity.this,Personal_centerActivity.class);
+					startActivity(intent);
+					break;
+				case 2:
+					intent = new Intent(MainActivity.this,Personal_centerActivity.class);
+					startActivity(intent);
+					break;
+				case 3:
+					intent = new Intent(MainActivity.this,Personal_centerActivity.class);
+					startActivity(intent);
+					break;
+				case 4:
+					intent = new Intent(MainActivity.this,Personal_centerActivity.class);
+					startActivity(intent);
+					break;
+				case 5:
+					intent = new Intent(MainActivity.this,AllRoutes.class);
+					startActivity(intent);
+					break;
+				default:
+					break;
+				}
+				Toast.makeText(MainActivity.this, mItemTexts[pos],
+						Toast.LENGTH_SHORT).show();
+				Log.i("MainActivity----89----success", pos+" "+mItemTexts[pos]);
+
+			}
+			
+			@Override
+			public void itemCenterClick(View view)
+			{
+				Toast.makeText(MainActivity.this,
+						"you can do something just like ccb  ",
+						Toast.LENGTH_SHORT).show();
+				
+			}
+		});
+
+		
 		//实例化搜索栏
 		csearch = (AutoCompleteTextView) findViewById(R.id.edit_Search1);
 		
@@ -76,14 +148,8 @@ public class MainActivity extends Activity {
 		citytipname=csearch.getText().toString();
 		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_dropdown_item_1line,citytipStrings);
 		csearch.setAdapter(arrayAdapter);
-		thHost = (TabHost) findViewById(R.id.tabhost);
-		thHost.setup();//initial TabHost
+
 		
-		
-		thHost.addTab(thHost.newTabSpec("tab1").setIndicator("首页",getResources().getDrawable(R.drawable.home)).setContent(R.id.tab1));
-		thHost.addTab(thHost.newTabSpec("tab2").setIndicator("景点",getResources().getDrawable(R.drawable.business)).setContent(R.id.tab2));
-		thHost.addTab(thHost.newTabSpec("tab3").setIndicator("个人",getResources().getDrawable(R.drawable.person)).setContent(R.id.tab3));
-		thHost.addTab(thHost.newTabSpec("tab4").setIndicator("更多",getResources().getDrawable(R.drawable.person)).setContent(R.id.tab4));
 		csearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			
 			@Override
@@ -102,18 +168,57 @@ public class MainActivity extends Activity {
 			}
 			
 		});
+		imagebutton1 = (ImageButton) findViewById(R.id.imagebutton1);
+		imagebutton1.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO 自动生成的方法存根
+		        Intent intent = new Intent(MainActivity.this,Personal_centerActivity.class);
+		        startActivity(intent);
+			}
+		});
 	}
-    public void turnToPersonal(View view){
-        Intent intent = new Intent(MainActivity.this,Personal_centerActivity.class);
-        startActivity(intent);
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    	// TODO 自动生成的方法存根
+    	if(keyCode==KeyEvent.KEYCODE_BACK){
+    		new AlertDialog.Builder(this)
+    		.setTitle("退出")
+    		.setMessage("确定要退出吗?")
+    		.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO 自动生成的方法存根
+					Intent exit = new Intent(Intent.ACTION_MAIN);
+					exit.addCategory(Intent.CATEGORY_HOME);
+					exit.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity(exit);
+					System.exit(0);
+				}
+			}).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO 自动生成的方法存根
+					dialog.cancel();
+				}
+			}).show();
+    		return true;
+    	}
+    	return super.onKeyDown(keyCode, event);
     }
+
+
+    
 		public void query(){
 			//通过搜索栏进行搜索:city表中的cityname-->city表中的id-->scenicroute表中的cityid-->景点id-->scenic表name
 			cityname = csearch.getText().toString();
 			
 			BmobQuery<City> query_city = new BmobQuery<City>();
 			query_city.addWhereEqualTo("cityname",cityname);
-			query_city.findObjects(MainActivity.this, new FindListener<City>() {
+			query_city.findObjects(MainActivity.this, new cn.bmob.v3.listener.FindListener<City>() {
 
 				@Override
 				public void onError(int arg0, String arg1) {
@@ -132,5 +237,56 @@ public class MainActivity extends Activity {
 			});
 			
 		}
-		
+		private void initDrawerLayout(){
+			drawerLayout = (DrawerLayout) this.findViewById(R.id.drawerLayout);
+			drawerLayout.setDrawerListener(new DrawerListener() {
+				
+				// 当我们打开菜单的时候，先执行onDrawerStateChanged，然后不断执行onDrawerSlide
+				//第三步会执行onDrawerOpened，最后执行onDrawerStateChanged
+				// 当我们关闭菜单的时候，先执行onDrawerStateChanged，然后不断执行onDrawerSlide
+				//第三步会执行onDrawerClosed，最后执行onDrawerStateChanged
+				@Override
+				public void onDrawerStateChanged(int newState) {
+					// TODO 自动生成的方法存根
+					Log.i("leftMenu", "onDrawerStateChanged");
+				}
+				
+				@Override
+				public void onDrawerSlide(View drawerView, float slideOffset) {
+					// TODO 自动生成的方法存根
+					slideAnim(drawerView, slideOffset);
+					Log.i("leftMenu", "onDrawerSlide");
+				}
+				
+				@Override
+				public void onDrawerOpened(View arg0) {
+					// TODO 自动生成的方法存根
+					Log.i("leftMenu", "onDrawerOpened");
+				}
+				
+				@Override
+				public void onDrawerClosed(View arg0) {
+					// TODO 自动生成的方法存根
+					Log.i("leftMenu", "onDrawerClosed");
+				}
+			});
+		}
+		private void slideAnim(View drawerView, float slideOffset) {
+			View contentView = drawerLayout.getChildAt(0);
+			// slideOffset表示菜单项滑出来的比例，打开菜单时取值为0->1,关闭菜单时取值为1->0
+			float scale = 1 - slideOffset;
+			float rightScale = 0.8f + scale * 0.2f;
+			float leftScale = 1 - 0.3f * scale;
+
+			ViewHelper.setScaleX(drawerView, leftScale);
+			ViewHelper.setScaleY(drawerView, leftScale);
+			ViewHelper.setAlpha(drawerView, 0.6f + 0.4f * (1 - scale));
+			ViewHelper.setTranslationX(contentView, drawerView.getMeasuredWidth()
+					* (1 - scale));
+			ViewHelper.setPivotX(contentView, 0);
+			ViewHelper.setPivotY(contentView, contentView.getMeasuredHeight() / 2);
+			contentView.invalidate();
+			ViewHelper.setScaleX(contentView, rightScale);
+			ViewHelper.setScaleY(contentView, rightScale);
+		}
 }

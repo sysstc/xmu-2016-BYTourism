@@ -5,13 +5,14 @@
     <string name="app_name">ByTourism1</string>
     <string name="sight">景点</string>
     <string name="message">您对该景点的意见 </string>
-
+	<string name="comments">查看评论</string>
     <string name="xiamen_university">厦门大学</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="send">发送</string>
     <string name="home_string">主页</string>
     <string name="discount_string">打折</string>
+    <string name="activity_lancher">发起活动</string>
     <string name="my_string">我的</string>
     <string name="more_string">更多</string>
     <string name="search_name">搜索</string>

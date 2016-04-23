@@ -20,7 +20,7 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".AllSightDetail"></activity>
-        <activity android:name=".SightDetail"></activity>
+        <activity android:name=".SightMessage"></activity>
 
         <activity
             android:name=".RegistActivity"
@@ -41,15 +41,14 @@
         </activity>
         <activity android:name=".LoginActivity"
                   android:label="ByTourisim1" >
-
         </activity>
-			<activity
-			    android:name=".AllRoutes"
-			    />
+        		<activity android:name=".CreateActivity"></activity>
+			<activity android:name=".AllRoutes"/>
 			<activity android:name=".MyCollectActivity"></activity>
 			<activity android:name=".RoutesCollectActivity"></activity>
 			<activity android:name=".RoutesCollectList"></activity>
-			
+			<activity android:name=".SightDetail"></activity>
+			<activity android:name=".ActivityDetail"></activity>
     </application>
 
 </manifest>

@@ -70,39 +70,28 @@
         android:layout_below="@+id/sight_view"
         android:inputType="textMultiLine"
         android:text="TextView" />
-    <LinearLayout 
+
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/sight_my_message"
         android:layout_below="@+id/textView0"
-        >
+        android:layout_above="@+id/sight_message" >
         
         <ListView
-            android:id="@+id/sight_all_message"
-            android:layout_width="wrap_content"
+            android:id="@+id/sight_activities"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             />
         
 	</LinearLayout>
-	<EditText
-	    android:id="@+id/sight_my_message"
+
+	<Button
+	    android:id="@+id/sight_message"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:layout_above="@+id/sendMessage"
-	    android:layout_alignParentLeft="true"
-	    android:ems="10"
-	    android:hint="@string/message"
-	    android:inputType="textMultiLine"
-	    android:padding="10dp"
-	    android:src="@drawable/home_three" />
-	<Button
-        android:id="@+id/sendMessage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/send"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true" 
-        android:onClick="submit"/>
+	    android:layout_alignLeft="@+id/city_name"
+	    android:layout_alignParentBottom="true"
+	    android:text="@string/comments" />
 
 	<TextView
 	    android:id="@+id/textView0"
@@ -110,7 +99,7 @@
 	    android:layout_height="wrap_content"
 	   android:layout_marginLeft="10dp"
 	    android:layout_below="@+id/sight_describe"
-	    android:text="留言板：" />
+	    android:text="活动：" />
 
 	<ImageView
 	    android:id="@+id/imageView1"
@@ -120,5 +109,14 @@
 	    
 	    android:layout_below="@+id/sight_describe"
 	    android:src="@drawable/shu_1" />
+
+	<Button
+	    android:id="@+id/launch_activity"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:layout_alignParentLeft="true"
+	    android:layout_toLeftOf="@+id/sight_message"
+	    android:text="@string/activity_lancher" />
 
 </RelativeLayout>

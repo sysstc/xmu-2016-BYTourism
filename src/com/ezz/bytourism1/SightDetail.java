@@ -1,24 +1,36 @@
 package com.ezz.bytourism1;
 
-import java.sql.Date;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ezz.bean.Activities;
 import com.ezz.bean.Collect;
 import com.ezz.bean.Scenic;
 import com.ezz.bean.User;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.c.i;
 import cn.bmob.v3.listener.DeleteListener;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UpdateListener;
 import android.R.integer;
 import android.app.Activity;
+import android.app.LauncherActivity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,6 +38,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewDebug.FlagToString;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -35,28 +50,32 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SightDetail extends BaseActivity{
+public class SightDetail extends BaseActivity implements OnItemClickListener{
 	private ImageView sight_view;
 	private TextView sight_describe;
-	private EditText sight_my_message;
-	private ListView sight_all_message;
+	private ListView sight_activities;
 	private String sight_name;
 	private String sight_price;
 	private int sight_id;
 	private String sight_type;
 	private Button back_btn;
-	private Button sendMessage;
 	private TextView city_name;
 	private ImageButton collectButton;
-	private TextView all_message;
 	private String mesStr="";
+	private String url;
+	private Button sight_message;
+	private Button launch_activity;
+	
+	private String sight_idtemp;
 	
 	private Integer userid ;
+	private String username;
+	
 	private int type;
 	private int flag;
-	private List<Map<String,Object>> dataList;
+	private List<Map<String, Object>> dataList;
 	
-	private SimpleAdapter simp_adapter;
+	private SimpleAdapter simpl_adapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,26 +84,47 @@ public class SightDetail extends BaseActivity{
 		setContentView(R.layout.sight_detail);
 		Bmob.initialize(SightDetail.this, "a1a4ff643e92be99bb8649e33589c596");
 		Intent searchIntent = getIntent();
+		
 		userid = getPreferenceId();
+		username = getPreferenceName();
+		
 		flag = 0;
 		sight_name = searchIntent.getStringExtra("sight_name");
 		sight_type = searchIntent.getStringExtra("sight_type");
 		sight_price = searchIntent.getStringExtra("sight_price");
-		String sight_idtemp = searchIntent.getStringExtra("sight_id");
+		sight_idtemp = searchIntent.getStringExtra("sight_id");
 		sight_view = (ImageView) findViewById(R.id.sight_view);
 		sight_describe = (TextView) findViewById(R.id.TextView);
-		sight_my_message = (EditText) findViewById(R.id.sight_my_message);
-		sight_all_message = (ListView) findViewById(R.id.sight_all_message);
+		launch_activity = (Button) findViewById(R.id.launch_activity);
+		sight_activities = (ListView) findViewById(R.id.sight_activities);
 		
+		sight_message = (Button)findViewById(R.id.sight_message);
+		sight_message.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO 自动生成的方法存根
+				Intent intent = new Intent(SightDetail.this,SightMessage.class);
+				intent.putExtra("sight_id",sight_idtemp);
+				intent.putExtra("sight_name",sight_name);
+				intent.putExtra("sight_type",sight_type);
+				intent.putExtra("sight_price", sight_price);
+				startActivity(intent);
+			}
+		});
 		back_btn = (Button) findViewById(R.id.back_btn);
 		sight_id = Integer.parseInt(sight_idtemp);
 		collectButton = (ImageButton) findViewById(R.id.collectButton);
-		sendMessage = (Button) findViewById(R.id.sendMessage);
-		
+		dataList = new ArrayList<Map<String, Object>>();
 		Toast.makeText(this, "name = "+sight_name+"type = "+sight_type+"price = "+sight_price, Toast.LENGTH_SHORT).show();
 		showView();
 		city_name = (TextView) findViewById(R.id.city_name);
 		city_name.setText(sight_name);
+		simpl_adapter = new SimpleAdapter(SightDetail.this,dataList, R.layout.sight_item, new String[]{
+				"activity_title1","activity_time","activity_place","activity_need","activity_id"
+		},new int[]{R.id.activity_title1,R.id.activity_time,R.id.activity_place,R.id.activity_need,R.id.activity_id});
+		sight_activities.setAdapter(simpl_adapter);
+		
 		if(userid!=0){
 		BmobQuery<Collect> query_collect = new BmobQuery<Collect>();
 		query_collect.addWhereEqualTo("userid", userid);
@@ -110,7 +150,6 @@ public class SightDetail extends BaseActivity{
 			Toast.makeText(SightDetail.this, "请先登录，否则将无法使用收藏和留言功能！",Toast.LENGTH_SHORT ).show();
 			collectButton.setImageResource(R.drawable.collect);
 			collectButton.setEnabled(false);
-			sendMessage.setEnabled(false);
 		}
 		Log.i("fail---85", flag+"");
 		collectButton = (ImageButton) findViewById(R.id.collectButton);
@@ -179,11 +218,6 @@ public class SightDetail extends BaseActivity{
 				
 			});
 
-		/*
-		if(flag==2){
-			
-		}*/
-/*collect -------------------------------*/
 		String username = getPreferenceName();
 		
 		Log.i("tag---65", username+" "+sight_id);
@@ -196,62 +230,73 @@ public class SightDetail extends BaseActivity{
 				finish();
 			}
 		});
-		
-	}
-	
-	public void submit(View view){
-		com.ezz.bean.Message userMessage = new com.ezz.bean.Message();
-		userMessage.setUserid(userid);
-		userMessage.setScenicid(sight_id);
-		sight_my_message = (EditText) findViewById(R.id.sight_my_message);
-		final String myMeg = sight_my_message.getText().toString();
-		userMessage.setContent(myMeg);
-		//SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
-		
-			Log.i("187---message", userid+" "+sight_id+" "+myMeg.toString());
-		userMessage.save(SightDetail.this, new SaveListener() {
+		sight_activities.setOnItemClickListener(this);
+		launch_activity.setOnClickListener(new OnClickListener() {
+			
 			@Override
-			public void onSuccess() {
+			public void onClick(View v) {
 				// TODO 自动生成的方法存根
-				Toast.makeText(SightDetail.this, "发表成功", Toast.LENGTH_SHORT).show();
-				
-				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				Date mytime = new Date(System.currentTimeMillis());
-				String timeStr = format.format(mytime);
-				
-				sight_my_message.setText("");
-				Map<String,Object> map = new HashMap<String,Object>();
-				map.put("luserid", userid);
-				map.put("lusercontent", myMeg);
-				map.put("lusertime", timeStr);
-				dataList.add(map);
-				simp_adapter.notifyDataSetChanged();
-			}
-			@Override
-			public void onFailure(int arg0, String arg1) {
-				// TODO 自动生成的方法存根
-				Log.i("fail--203", arg0+arg1);
-				Toast.makeText(SightDetail.this, "发表失败", Toast.LENGTH_SHORT).show();	
+				Intent intent = new Intent();
+				intent.setClass(SightDetail.this, CreateActivity.class);
+				intent.putExtra("sight_id", sight_id+"");
+				startActivity(intent);
 			}
 		});
 	}
+	
 	Handler handler = new Handler(){
 		@Override
 		public void handleMessage(android.os.Message msg) {
 			// TODO 自动生成的方法存根
+			Object activity;
+			
 			switch (msg.what) {
+			
 			case 1:
 					sight_describe = (TextView) findViewById(R.id.sight_describe);
 			    	Toast.makeText(SightDetail.this, msg.obj.toString()+"||||||||",Toast.LENGTH_SHORT).show();
 					sight_describe.setText(msg.obj.toString());
 				break;
-
+			case 2:
+				Log.i("SightDetail---249", msg.obj.toString());
+				url = msg.obj.toString();
+				new Thread(){
+					public void run() {
+						
+						Bitmap bitmap = null;
+						try {
+							URL myURL = new URL(url);
+							HttpURLConnection conn = (HttpURLConnection) myURL.openConnection();
+							conn.setConnectTimeout(500);
+							conn.setDoInput(true);
+							conn.setUseCaches(true);
+							conn.connect();
+							InputStream is = conn.getInputStream();
+							bitmap = BitmapFactory.decodeStream(is);
+							sight_view.setImageBitmap(bitmap);
+							is.close();
+						} catch (Exception e) {
+							// TODO 自动生成的 catch 块
+							e.printStackTrace();
+						}
+					};
+				
+				}.start();
+				break;
+			case 3:
+				Log.i("244----------",msg.obj.toString());
+				activity = msg.obj;
+				Map<String,Object> map = (Map<String,Object>)activity;
+				dataList.add(map);
+				simpl_adapter.notifyDataSetChanged();
+				break;
 			default:
 				break;
 			}
 			super.handleMessage(msg);
 		}
 	};
+
 	public void showView(){
 		BmobQuery<Scenic> query_scenic = new BmobQuery<Scenic>();
 		query_scenic.addWhereEqualTo("scenicname",sight_name);
@@ -264,6 +309,13 @@ public class SightDetail extends BaseActivity{
 					msg.what = 1;
 					msg.obj = scenic.getDescribe();
 					handler.sendMessage(msg);
+		
+					
+					Message msg1 = new Message();
+					msg1.what=2;
+					msg1.obj = scenic.getScenicview();
+					handler.sendMessage(msg1);
+		
 				}
 			}
 			@Override
@@ -272,32 +324,103 @@ public class SightDetail extends BaseActivity{
 				
 			}
 		});
-		BmobQuery<com.ezz.bean.Message> query_message = new BmobQuery<com.ezz.bean.Message>();
-		query_message.addWhereEqualTo("scenicid", sight_id);
-		query_message.findObjects(SightDetail.this, new FindListener<com.ezz.bean.Message>() {
+		
+		BmobQuery<Activities> query_activities = new BmobQuery<Activities>();
+		query_activities.addWhereEqualTo("scenicid", sight_id);
+		Log.i("..............", sight_id+"");
+		query_activities.findObjects(SightDetail.this, new FindListener<Activities>() {
 			@Override
 			public void onError(int arg0, String arg1) {
 				// TODO 自动生成的方法存根
-				Log.i("fail--250", arg0+arg1);
+				Log.i("fail---258", arg0+arg1);
 			}
+
 			@Override
-			public void onSuccess(List<com.ezz.bean.Message> messages) {
+			public void onSuccess(List<Activities> activities) {
 				// TODO 自动生成的方法存根
-				dataList = new ArrayList<Map<String, Object>>();
-				for(com.ezz.bean.Message message:messages){
+				Log.i("264---success", "111111111");
+				dataList = new ArrayList<Map<String,Object>>();
+				Log.i("1111111",activities.get(0).getDescribe());
+				for(Activities activity:activities){
 					Map<String, Object> map = new HashMap<String,Object>();
-					map.put("luserid", message.getUserid());
-					map.put("lusercontent", message.getContent());
-					map.put("lusertime", message.getCreatedAt());
-					dataList.add(map);
+					String date_str = activity.getPtime();
+					SimpleDateFormat sim = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+					Date d = null;
+				try {
+						d = sim.parse(date_str);
+						if(d.before(new Date())&&activity.getPstate()==0){
+							Log.i("111111111", "目标时间在当前时间之前");
+							//activity.setPstate(0);
+							activity.setId(activity.getId());
+							activity.setTitle(activity.getTitle());
+							activity.setDescribe(activity.getDescribe());
+							activity.setAddress(activity.getAddress());
+							activity.setType(activity.getType());
+							activity.setPtime(activity.getPtime());
+							activity.setPstate(2);
+							activity.setScenicid(activity.getScenicid());
+							activity.setPcount(activity.getPcount());
+							activity.setPneed_count(activity.getPneed_count());
+							activity.update(SightDetail.this,activity.getObjectId(),new UpdateListener() {
+								
+								@Override
+								public void onSuccess() {
+									// TODO 自动生成的方法存根
+									Log.i("success----356", "更新成功！");
+								}
+								
+								@Override
+								public void onFailure(int arg0, String arg1) {
+									// TODO 自动生成的方法存根
+									Log.i("success----356", "更新失败！"+arg0+arg1);									
+								}
+							});
+						}else{
+							Log.i("222222222", "目标时间在当前时间之后");
+						}
+						
+					} catch (ParseException e) {
+						// TODO 自动生成的 catch 块
+						e.printStackTrace();
+					}
+					
+					if(activity.getPstate()==0){
+						map.put("activity_id", activity.getId()+"");
+						map.put("activity_title1", activity.getTitle());
+						map.put("activity_time", activity.getPtime());
+						map.put("activity_place", activity.getAddress());
+						
+						map.put("activity_need", activity.getPneed_count()+"");
+						//dataList.add(map);
+						Message msg = new Message();
+						msg.what = 3;
+						msg.obj = map;
+						handler.sendMessage(msg);
+						
+					}
 				}
-				/*sight_all_message.setText(mesStr);*/
-				simp_adapter = new SimpleAdapter(SightDetail.this, dataList, R.layout.itemlist, new String[]{
-						"luserid","lusercontent","lusertime"},new int[]{R.id.luserid,R.id.lusercontent,R.id.lusertime});
-				sight_all_message.setAdapter(simp_adapter);
+				
+				
+				simpl_adapter = new SimpleAdapter(SightDetail.this,dataList, R.layout.sight_item, new String[]{
+						"activity_title1","activity_time","activity_place","activity_need","activity_id"
+				},new int[]{R.id.activity_title1,R.id.activity_time,R.id.activity_place,R.id.activity_need,R.id.activity_id});
+				sight_activities.setAdapter(simpl_adapter);
+				
 			}
-			
 		});
 		
 	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		// TODO 自动生成的方法存根
+		Map<String, Object> map = (Map<String, Object>) sight_activities.getItemAtPosition(position);
+		//Log.i("372", map.get("activity_id")+"");
+		Intent intent = new Intent(this,ActivityDetail.class);
+		intent.putExtra("activity_id",map.get("activity_id")+"");
+		startActivity(intent);
+	}
+
+	
 }

@@ -8,7 +8,7 @@ public class Scenic extends BmobObject{
 	private String scenicname;
 	private String describe;
 	private int cityid;
-	private int avggrade;
+	private float avggrade;
 	private int gradenum;
 	private String scenicview;
 	private int scenicprice;
@@ -38,10 +38,10 @@ public class Scenic extends BmobObject{
 	public void setCityid(int cityid) {
 		this.cityid = cityid;
 	}
-	public int getAvggrade() {
+	public float getAvggrade() {
 		return avggrade;
 	}
-	public void setAvggrade(int avggrade) {
+	public void setAvggrade(float avggrade) {
 		this.avggrade = avggrade;
 	}
 	public int getGradenum() {

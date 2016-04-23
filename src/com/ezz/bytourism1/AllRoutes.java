@@ -61,9 +61,8 @@ public class AllRoutes extends Activity implements OnClickListener{
 			public void onClick(View v) {
 				// TODO 自动生成的方法存根
 					// TODO 自动生成的方法存根     
-					Intent intent = new Intent(AllRoutes.this,MainActivity.class);
-					startActivity(intent);
-					finish();
+					AllRoutes.this.finish();
+					AllRoutes.this.finish();
 			}
 		});
 		

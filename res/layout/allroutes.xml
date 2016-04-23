@@ -79,8 +79,9 @@
                 android:scaleType="fitXY" />
         </LinearLayout>
        	<ScrollView 
-			    android:layout_width="wrap_content"
-				android:layout_height="wrap_content">
+			    android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				android:fillViewport="true">
             
 		 <LinearLayout
 		     android:layout_width="fill_parent"
@@ -89,7 +90,7 @@
 				<ListView
 				    android:id="@+id/route_listview"
 				    android:layout_width="fill_parent"
-				    android:layout_height="1500dp" >
+				    android:layout_height="fill_parent" >
 
 				</ListView>
 		</LinearLayout>

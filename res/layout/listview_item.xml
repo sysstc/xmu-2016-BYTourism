@@ -29,16 +29,6 @@
           android:layout_marginTop="16dp"
           android:text="@string/cultural_religion" />
 
-
-      <ImageView
-          android:id="@+id/imagePrice"
-          android:layout_width="10dp"
-          android:layout_height="10dp"
-          android:layout_above="@+id/textView2"
-          android:layout_alignParentRight="true"
-          android:layout_marginRight="60dp"
-          android:src="@drawable/price" />
-
       <TextView
           android:id="@+id/sight_price"
           android:layout_width="wrap_content"
@@ -71,6 +61,16 @@
           android:layout_below="@+id/sight_name"
           android:isIndicator="true"
           android:numStars="5"
-         /> 
+          android:clickable="false"
+         />
+
+	 <ImageView
+	     android:id="@+id/imagePrice"
+	     android:layout_width="10dp"
+	     android:layout_height="10dp"
+	     android:layout_alignBottom="@+id/sight_name"
+	     android:layout_alignParentRight="true"
+	     android:layout_marginRight="58dp"
+	     android:src="@drawable/price" />
      
 </RelativeLayout>

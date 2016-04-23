@@ -2,8 +2,13 @@ package com.ezz.bytourism1;
 
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -27,6 +32,7 @@ public class MySimpleAdapter extends SimpleAdapter {
     private int mResource;
     private int mDropDownResource;
     private LayoutInflater mInflater;
+    
 	public MySimpleAdapter(Context context,
 			List<? extends Map<String, ?>> data, int resource, String[] from,
 			int[] to) {
@@ -107,31 +113,34 @@ public class MySimpleAdapter extends SimpleAdapter {
                         //setViewText((TextView) v, text);
                         ((TextView) v).setText(text);
                     } else if (v instanceof ImageView) {  
-                    	/*if(data instanceof String){
-						//	File file = new File(data.toString());
-							File file = new File("E://image/xiamen_three.jpg");
-                    		if(file.exists()){
-								Bitmap bm = BitmapFactory.decodeFile("/image/xiamen_three.jpg");
-								((ImageView)v).setImageBitmap(bm);
-							}
-							else{
-								file = new File("E://image//xiamen_three.jpg");
-								
-								Log.i("file.exists = ", ""+file.exists());
-								}
-                    	}*/
-                    	if (data instanceof Integer) {
-                            setViewImage((ImageView) v, (Integer) data);                            
-                        } 
-                    	else if(data instanceof byte[]) {      //备注1
-								Bitmap bmp;
-								byte[] image = (byte[])data;
-								if(image.length!=0){
-								bmp = BitmapFactory.decodeByteArray(image, 0, image.length);
-								((ImageView) v).setImageBitmap(bmp);
-								}
-							}
-                        }
+                    	if(data instanceof String){
+                    		Log.i("MySimpleAdapter---118", data.toString());
+                    		Thread thread = new Thread(){
+                    			public void run(){
+                    				try {
+                    					String url = data.toString();
+        								URL myURL = new URL(url);
+        								Bitmap bitmap = null;
+        								HttpURLConnection conn = (HttpURLConnection) myURL.openConnection();
+        								conn.setConnectTimeout(500);
+        								conn.setDoInput(true);
+        								conn.setUseCaches(false);
+        								conn.connect();
+        								InputStream is = conn.getInputStream();
+        								bitmap = BitmapFactory.decodeStream(is);
+                    					
+        								((ImageView)v).setImageBitmap(bitmap);
+        								is.close();
+        								
+        							} catch (Exception e) {
+        								// TODO 自动生成的 catch 块
+        								e.printStackTrace();
+        							}
+                    			}
+                    		};
+                    		thread.start();
+                    	}
+                       }
                     
                     else {
                         throw new IllegalStateException(v.getClass().getName() + " is not a " +
@@ -141,7 +150,6 @@ public class MySimpleAdapter extends SimpleAdapter {
             }
             }
    }
-   
  
     public void setViewImage(ImageView v, int value) {
         v.setImageResource(value);

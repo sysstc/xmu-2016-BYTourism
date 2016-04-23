@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <LinearLayout 
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="horizontal"
+	
+        >
+        
+        <ImageButton 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+			android:src="@drawable/arrow"
+			 android:background="#00000000"
+            />
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="返回"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:layout_marginLeft="70dp"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:text="创建活动" />
+        
+    </LinearLayout>
+    
+ 
+         <EditText
+        android:id="@+id/activity_name1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="活动名称（4-25字）"
+        android:textSize="22sp"
+        android:layout_marginTop="15dp"
+         android:background="#FFFFFF"
+        android:ems="10" >
+
+        <requestFocus android:layout_width="wrap_content" />
+
+    </EditText>
+         
+         
+         
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="#FFFFFF"
+        android:orientation="vertical" >
+
+       <LinearLayout
+           android:layout_width="fill_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal" >
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:gravity="center"
+               android:text="开始时间"
+               android:textSize="15sp"
+               android:textStyle="bold" />
+
+           <EditText
+               android:id="@+id/edit_start_data"
+               android:layout_width="120dp"
+               android:layout_height="wrap_content"
+               android:layout_weight="2.48"
+               android:inputType="date" />
+
+           <ImageButton
+               android:id="@+id/button_start_data1"
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:layout_marginBottom="0dp"
+               android:layout_marginLeft="5dp"
+               android:background="#00000000"
+               android:src="@drawable/data_1" />
+
+           <EditText
+               android:id="@+id/edit_start_time1"
+               android:layout_width="80dp"
+               android:layout_height="wrap_content"
+               android:layout_marginLeft="5dp"
+               android:ems="10"
+               android:inputType="time" />
+
+           <ImageButton
+               android:id="@+id/button_start_time1"
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:layout_marginBottom="0dp"
+               android:layout_marginLeft="5dp"
+               android:background="#00000000"
+               android:src="@drawable/time1" />
+       </LinearLayout>
+
+   <LinearLayout
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       android:orientation="horizontal" >
+
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="match_parent"
+           android:gravity="center"
+           android:text="结束日期"
+           android:textSize="15sp"
+           android:textStyle="bold" />
+
+       <EditText
+           android:id="@+id/edit_end_data1"
+           android:layout_width="120dp"
+           android:layout_height="wrap_content"
+           android:layout_weight="0.67"
+           android:inputType="date" />
+
+       <ImageButton
+           android:id="@+id/button_end_data1"
+           android:layout_width="wrap_content"
+           android:layout_height="match_parent"
+           android:layout_marginBottom="0dp"
+           android:layout_marginLeft="5dp"
+           android:background="#00000000"
+           android:src="@drawable/data_1" />
+
+       <EditText
+           android:id="@+id/edit_end_time1"
+           android:layout_width="80dp"
+           android:layout_height="wrap_content"
+           android:layout_marginLeft="5dp"
+           android:ems="10"
+           android:inputType="time" />
+
+       <ImageButton
+           android:id="@+id/button_end_time1"
+           android:layout_width="wrap_content"
+           android:layout_height="match_parent"
+           android:layout_marginBottom="0dp"
+           android:layout_marginLeft="5dp"
+           android:background="#00000000"
+           android:src="@drawable/time1" />
+   </LinearLayout>
+ 
+    </LinearLayout>
+
+    
+    
+    <LinearLayout 
+          android:layout_marginTop="15dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            >
+   
+           <LinearLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView 
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:background="#FFFFFF"
+                android:ems="10"
+                android:text="活动人数："
+                android:textSize="20sp" >
+
+  			</TextView>
+
+  			<EditText
+  			    android:id="@+id/edit_num1"
+  			    android:layout_width="43dp"
+  			    android:layout_height="fill_parent"
+  			    android:inputType="number"
+  			    android:ems="10"
+  			    android:singleLine="true" />
+      
+        </LinearLayout>
+        
+        
+        
+        <LinearLayout 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            >
+
+            <TextView 
+                android:id="@+id/editText2"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:background="#FFFFFF"
+                android:ems="10"
+                android:text="活动地点："
+                android:textSize="20sp" >
+
+  			</TextView>
+
+            <EditText
+                android:id="@+id/edit_address"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:ems="10" />
+      
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" 
+             android:layout_marginTop="10dp"
+            >
+
+           <TextView 
+               android:id="@+id/editText5"
+               android:layout_width="102dp"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="5dp"
+               android:background="#FFFFFF"
+               android:ems="10"
+               android:text="类别："
+               android:textSize="20sp" >
+
+       </TextView>
+
+           <EditText
+               android:id="@+id/edit_type"
+               android:layout_width="fill_parent"
+                android:singleLine="true"
+               android:layout_height="fill_parent" 
+               
+               />
+
+</LinearLayout>
+
+       
+    
+               <TextView 
+                   android:id="@+id/editText6"
+                   android:layout_width="108dp"
+                   android:layout_height="wrap_content"
+                   android:background="#FFFFFF"
+                   android:ems="10"
+                    android:layout_marginTop="10dp"
+                   android:text="活动介绍："
+                   android:textSize="20sp" >
+
+       </TextView>
+
+               <EditText
+                   android:id="@+id/edit_introduce"
+                   android:layout_width="fill_parent"
+                   android:layout_height="wrap_content"
+                   android:ems="10" />
+    
+  
+            
+        </LinearLayout>
+
+    <Button
+        android:id="@+id/activity_launcher"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#E6E6FA"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="5dp"
+        android:text="发起活动" />
+   
+</LinearLayout>

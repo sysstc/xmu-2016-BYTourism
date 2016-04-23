@@ -60,17 +60,20 @@
     <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:orientation="horizontal" android:layout_weight="0.1" android:id="@+id/onew">
+            android:paddingTop="20dp"
+            android:orientation="horizontal" android:layout_weight="0.08" android:id="@+id/onew">
 
 
   <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content" android:id="@+id/info">
 
       <ImageView
           android:id="@+id/imageView1"
           android:layout_width="80dp"
           android:layout_height="80dp"
+          android:paddingLeft="10dp"
+          android:paddingTop="6dp"
           android:layout_alignParentLeft="true"
           android:src="@drawable/touxiang" />
    <LinearLayout 
@@ -83,40 +86,45 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    >
+    android:weightSum="1">
       <TextView
               android:id="@+id/textView2"
-              android:layout_width="97dp"
+              android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:text="昵  称："
+              android:paddingLeft="20dp"
+              android:paddingTop="7dp"
               android:textAppearance="?android:attr/textAppearanceMedium"
-              android:layout_marginStart="30dp"/>
-      <TextView 
-          	android:id="@+id/textView12" 
-         	android:layout_width="97dp" 
-         	android:layout_height="wrap_content"
-            android:text="账   号：" 
+              android:text="  昵   称："/>
+        <TextView
+            android:id="@+id/nameview"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="26dp"
+            android:text="未登录"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_below="@+id/imageView1" 
-            android:layout_alignStart="@+id/textView2"/>
-     </LinearLayout>
+            />
+    </LinearLayout>
      <LinearLayout 
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     >
-      <TextView 
-          android:id="@+id/nameview" 
-          android:layout_width="110dp" 
-          android:layout_height="wrap_content"
-          android:text="未登录" 
-          android:textAppearance="?android:attr/textAppearanceMedium"
-	     />
-      <TextView 
+         <TextView
+                 android:id="@+id/textView12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                 android:paddingLeft="20dp"
+                 android:paddingTop="10dp"
+               android:text="  账   号："
+               android:textAppearance="?android:attr/textAppearanceMedium"
+               android:layout_below="@+id/imageView1"
+               android:layout_alignStart="@+id/textView2"/>
+         <TextView
           android:id="@+id/idview" 
           android:layout_width="110dp" 
           android:layout_height="wrap_content"
-          android:text="未登录" 
+          android:paddingLeft="26dp"
+          android:text="未登录"
           android:textAppearance="?android:attr/textAppearanceMedium"
          />
 </LinearLayout>
@@ -128,11 +136,11 @@
     <RelativeLayout
              android:id="@+id/relative4"
              android:layout_width="fill_parent"
-             android:layout_height="60dp"
-			
-             android:layout_marginTop="17dp" android:layout_weight="0.2">
+             android:layout_height="400dp"
 
-         <ImageButton 
+              >
+
+         <ImageButton
              android:id="@+id/buttoninvite"
              android:layout_width="50dp"
              android:layout_height="50dp"
@@ -142,7 +150,7 @@
              android:src="@drawable/zuji_3"
              />
 
-        <ImageButton 
+        <ImageButton
              android:id="@+id/buttonscenic"
              android:layout_width="50dp"
              android:layout_height="50dp"
@@ -153,7 +161,7 @@
 			 android:src="@drawable/haoyou_3"
               />
 
-         <ImageButton 
+         <ImageButton
              android:id="@+id/buttonpath"
              android:layout_width="50dp"
              android:layout_height="50dp"
@@ -182,39 +190,38 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:background="#E6E6FA"
-                android:text="我的活动" 
-                android:layout_below="@+id/button1" 
-                android:layout_alignStart="@+id/button1"
-                android:layout_marginTop="29dp"/>
+                android:text="我的活动"
+                android:layout_below="@+id/button1"
+                android:layout_marginTop="29dp" android:layout_alignParentStart="true"
+        />
     </RelativeLayout>
     <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="220dp" android:id="@+id/yep">
+            android:layout_height="250dp" android:id="@+id/yep"
+            android:paddingTop="-70dp"
+             >
 
         <Button
-            android:id="@+id/login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="95dp"
-            android:layout_marginStart="96dp"
-            android:layout_marginTop="58dp"
-            android:onClick="trunToLogin"
-            android:text="登录" />
+                android:id="@+id/login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="95dp"
+                android:layout_marginStart="96dp"
+                android:onClick="trunToLogin"
+                android:text="登录" android:background="#E6E6FA"/>
 
         <Button
-            android:id="@+id/regist"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/login"
-            android:layout_alignBottom="@+id/login"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="91dp"
-            android:layout_toRightOf="@+id/login"
-            android:onClick="turnToRegist"
-            android:text="注册" />
+                android:id="@+id/regist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/login"
+                android:layout_alignBottom="@+id/login"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="91dp"
+                android:onClick="turnToRegist"
+                android:text="注册" android:background="#E6E6FA"/>
 
     </RelativeLayout>
 
